@@ -1,0 +1,25 @@
+{
+  "name": "draweb-nrm",
+  "version": "1.0.0",
+  "description": "Restful api module of draweb",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/podmaxs/draweb-nrm.git"
+  },
+  "keywords": [
+    "draweb",
+    "api",
+    "restful",
+    "nodejs"
+  ],
+  "author": "draweb-team",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/podmaxs/draweb-nrm/issues"
+  },
+  "homepage": "https://github.com/podmaxs/draweb-nrm#readme"
+}
