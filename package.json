@@ -1,8 +1,8 @@
 {
   "name": "draweb-nrm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Restful api module of draweb",
-  "main": "serve.js",
+  "main": "index.js",
   "scripts": {
     "start": "nodemon serve.js",
     "init": "node serve.js"
