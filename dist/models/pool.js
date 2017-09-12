@@ -1,12 +1,18 @@
 'use strict';
 
+var defaultConf = require('./config');
+
 module.exports = function(config){
 	let self = this;
 
+	if(!config)
+		config = new defaultConf();
 
 	this.loadLibs = function(folder, init){
+		let root = process.env.PWD;
 		return new Promise((resolve, reject) => {
-			let normalizedPath = require("path").join(__dirname, folder),
+			self.makeIfNot(root+'/'+folder);
+			let normalizedPath = require("path").join(root, folder),
 				pool           = {};
 			require("fs").readdirSync(normalizedPath).forEach(function(file) {
 				let module = require(folder + "/" + file);
@@ -18,6 +24,12 @@ module.exports = function(config){
 			resolve(pool);
 		});
 	};
+
+	this.makeIfNot = function(path){
+		var fs = require('fs');
+		if (!fs.existsSync(path))
+		    fs.mkdirSync(path);
+	}
 
 
 	

@@ -1,5 +1,10 @@
 'use strict';
 
-let serve = require('./dist/module');
 
-serve.run();
+let app = require('./dist/module');
+	
+
+
+new app.serve(new app.config({
+	appName: "Sample draweb-nrm"
+})).run();

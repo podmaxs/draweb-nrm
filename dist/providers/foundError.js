@@ -9,7 +9,8 @@ let check          = require('syntax-error'),
 			return new Promise((resolve,reject) => {
 				let normalizedPath = require("path").join(__dirname, "."),
 					errors         = [];
-				console.log(process.env.PWD,normalizedPath)
+				//console.log(process.env.PWD,normalizedPath)
+				console.log("Check code")
 				fs.readdirSync(normalizedPath).forEach(function(folder) {
 				 	if(fs.lstatSync(normalizedPath+'/'+folder).isDirectory()){
 						let tmpPath = normalizedPath+'/'+folder;
@@ -28,6 +29,7 @@ let check          = require('syntax-error'),
 				 		});
 				 	}
 				});
+
 				resolve(errors);
 			});
 		}

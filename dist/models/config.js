@@ -3,10 +3,11 @@
 module.exports = function(sets){
 	let self     = this;
 	this.default = {
-		port:             89,
+		port:             8981,
 		folderSchemes:   'schemes',
 		folderProviders: 'providers',
-		folderModels:    'models'
+		folderModels:    'models',
+		appName: 'draweb-nrm'
 	};
 
 

@@ -1,10 +1,14 @@
 'use strict';
 
+let serve       = require("./models/server"),
+	configModel = require('./models/config');
+
 module.exports = new function(){
 	let self = this;
 
 	
 	return {
-		run: function(){console.log('hola mundo')}
+		serve:  serve,
+		config: configModel
 	}
 }

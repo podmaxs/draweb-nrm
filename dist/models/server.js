@@ -6,14 +6,15 @@ let express        = require('express'),
 	methodOverride = require('method-override'),
 	he             = require('./../providers/foundError'),
 	configModel    = require('./../models/config'),
-	poolModel      = require('./../models/pool'),
-	router         = function(config) {
+	poolModel      = require('./../models/pool');
+
+	module.exports = function(config) {
 		
 		let self = this;
-		global.exports = new poolModel(config);
+		let pool = new poolModel(config);
+
 		if(!config)
 			config = new configModel();
-
 		this.run = function() {
 			
 			app.use(bodyParser.urlencoded({
@@ -25,13 +26,12 @@ let express        = require('express'),
 			.then(
 				(errors)=>{
 					if(!errors[0]){
-
 						app.get('/', (req, res) =>{
-							res.send('It works');
+							res.send('Load '+config.appName);
 						});
 						
 						app.listen(config.port, function(){
-							console.log('server redy');
+							console.log('server redy on '+config.port);
 						});
 							
 					}
@@ -43,5 +43,3 @@ let express        = require('express'),
 
 
 	};
-
-module.exports = router;
