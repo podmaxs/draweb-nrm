@@ -1,6 +1,7 @@
 'use strict';
 
 let serve       = require("./models/server"),
+	routerModel = require('./models/router'),
 	configModel = require('./models/config');
 
 module.exports = new function(){
@@ -9,6 +10,7 @@ module.exports = new function(){
 	
 	return {
 		serve:  serve,
-		config: configModel
+		config: configModel,
+		router: routerModel
 	}
 }

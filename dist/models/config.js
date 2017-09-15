@@ -7,7 +7,8 @@ module.exports = function(sets){
 		folderSchemes:   'schemes',
 		folderProviders: 'providers',
 		folderModels:    'models',
-		appName: 'draweb-nrm'
+		appName: 'draweb-nrm',
+		dbName:  'drawebnrm'
 	};
 
 
