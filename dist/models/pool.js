@@ -28,6 +28,48 @@ module.exports = function(config){
 		});
 	};
 
+
+	this.loadModule = function(normalizedPathModules){
+		let root      = process.env.PWD+'/modules',
+			pool      = {};
+		return new Promise((resolve, reject) => {
+			require("fs").readdirSync(normalizedPathModules).forEach(function(module) {
+				if(module != "." && module != ".."){
+					self.makeIfNot(root+'/'+module);
+					let normalizedPath = require("path").join(root, module);
+						require("fs").readdirSync(normalizedPath).forEach(function(file) {
+							let module = require(normalizedPath + "/" + file);
+							if(file.indexOf('.scheme.js') != -1)
+								self.scheme['schemes'][file.replace('.scheme.js','')] = new module(self.scheme);
+							if(file.indexOf('.model.js') != -1)
+								self.scheme['models'][file.replace('.model.js','')] = module;
+							if(file.indexOf('.provider.js') != -1)
+								self.scheme['providers'][file.replace('.provider.js','')] = new module(self.scheme);
+						});
+				}
+			});
+			resolve(pool);
+		});
+	};
+
+
+	this.loadModules = function(){
+		let root = process.env.PWD;
+		return new Promise((resolve, reject) => {
+			let normalizedPath = require("path").join(root, '/modules/');
+			self.makeIfNot(normalizedPath);
+			self.loadModule(normalizedPath)
+			.then(
+				(tempPool) => {
+					resolve(self.scheme);	
+				}
+			)
+			
+		});
+	};
+
+
+
 	this.makeIfNot = function(path){
 		var fs = require('fs');
 		if (!fs.existsSync(path))
@@ -70,5 +112,5 @@ module.exports = function(config){
 		}
 	};
 
-	return self.loadPool;
+	return self.loadModules;
 }
