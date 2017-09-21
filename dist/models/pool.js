@@ -38,13 +38,13 @@ module.exports = function(config){
 					self.makeIfNot(root+'/'+module);
 					let normalizedPath = require("path").join(root, module);
 						require("fs").readdirSync(normalizedPath).forEach(function(file) {
-							let module = require(normalizedPath + "/" + file);
+							let moduleFile = require(normalizedPath + "/" + file);
 							if(file.indexOf('.scheme.js') != -1)
-								self.scheme['schemes'][file.replace('.scheme.js','')] = new module(self.scheme);
+								self.scheme['schemes'][file.replace('.scheme.js','')] = moduleFile;
 							if(file.indexOf('.model.js') != -1)
-								self.scheme['models'][file.replace('.model.js','')] = module;
+								self.scheme['models'][file.replace('.model.js','')] = moduleFile;
 							if(file.indexOf('.provider.js') != -1)
-								self.scheme['providers'][file.replace('.provider.js','')] = new module(self.scheme);
+								self.scheme['providers'][file.replace('.provider.js','')] = moduleFile;
 						});
 				}
 			});

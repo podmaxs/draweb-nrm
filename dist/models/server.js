@@ -21,6 +21,7 @@ let express        = require('express'),
 			app.use(bodyParser.urlencoded({
 				extended: true
 			}));
+
 			app.use(bodyParser.json());
 			app.use(methodOverride());
 			he.check()
@@ -31,11 +32,11 @@ let express        = require('express'),
 						poolLoader()
 						.then(
 							function(pool){
-								let rLoader = new router(app, routes, pool),
+								let rLoader   = new router(app, routes, pool),
 									conection = new db(config.dbName);
 								rLoader.load()
 								.then(
-									() => {
+									(app) => {
 										app.get('/', (req, res) =>{
 											res.send('Load '+config.appName);
 										});
