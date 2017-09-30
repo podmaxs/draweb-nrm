@@ -8,11 +8,31 @@ let express        = require('express'),
 	router         = require('./../providers/routerLoader'),
 	configModel    = require('./../models/config'),
 	db             = require('./../providers/mongoseConection'),
+	path           = require('path'),
 	poolModel      = require('./../models/pool');
 
-	module.exports = function(config) {
+	module.exports = function(config, imports) {
 		
 		let self = this;
+
+
+		this.declareImports = function(pool){
+			if(Array.isArray(imports)){
+				for(let i in imports){
+					if(imports[i]){
+						for(let r in imports[i]){
+							if(Array.isArray(imports[i][r])){
+								for(let t in imports[i][r])
+									pool[r][imports[i][r][t]['name']] = imports[i][r][t]['link'];
+							}
+						}
+					}
+				}
+			}
+			return pool;
+		}
+
+
 
 		if(!config)
 			config = new configModel();
@@ -21,9 +41,10 @@ let express        = require('express'),
 			app.use(bodyParser.urlencoded({
 				extended: true
 			}));
-
+			app.use('/public',express.static(process.env.PWD+'/public'));
 			app.use(bodyParser.json());
 			app.use(methodOverride());
+			app.use(express.static('public'));
 			he.check()
 			.then(
 				(errors)=>{
@@ -32,7 +53,7 @@ let express        = require('express'),
 						poolLoader()
 						.then(
 							function(pool){
-								let rLoader   = new router(app, routes, pool),
+								let rLoader   = new router(app, routes, self.declareImports(pool)),
 									conection = new db(config.dbName);
 								rLoader.load()
 								.then(

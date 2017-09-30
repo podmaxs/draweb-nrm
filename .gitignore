@@ -1,6 +1,4 @@
 node_modules
 package-lock.json
-models
-providers
-schemes
 modules
+public
