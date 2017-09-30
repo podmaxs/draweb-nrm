@@ -2,7 +2,8 @@
 
 	let busboy = require('connect-busboy'),
 		path   = require('path'),
-		fs     = require('fs-extra');
+		fs     = require('fs-extra'),
+		thumb  = require('node-thumbnail').thumb;
 
 module.exports = function(){
 	let self = this;
@@ -25,7 +26,7 @@ module.exports = function(){
 		return new Promise((resolve, reject) => {
 			let fstream;
 	        req.pipe(req.busboy);
-	        req.busboy.on('file', function (fieldname, file, filename) {
+	        req.busboy.on('file', function (fieldname, file, filename, encoding, mimetype) {
 	            console.log("Uploading: " + filename);
 	            let ext = self.getExtencion(filename);
 	            //Path where image will be uploaded
@@ -42,20 +43,62 @@ module.exports = function(){
 	            fstream = fs.createWriteStream(dir + nname);
 	            file.pipe(fstream);
 	            fstream.on('close', function () {    
-	                console.log("Upload Finished of " + nname);              
-	                resolve({
-		                	url:      localpath + nname,
-		                	fullurl:  self.createHttpHost(req)+localpath + nname,
-		                	type:     req.params.type,
-		                	format:   ext,
-		                	filename: filename,
-		                	file:     file
-	                });
+	                console.log("Upload Finished of " + nname);  
+	                if(mimetype.indexOf('image/') != -1){
+	                	self.createminiature(localpath + nname, nname)
+	                	.then(
+	                		(miniaturename) => {
+    			                resolve({
+				                	local_url:  localpath + nname,
+				                	server_url: self.createHttpHost(req)+localpath + nname,
+				                	thumb_url:  self.createHttpHost(req)+miniaturename,
+				                	ext:        ext,
+				                	format:     mimetype,
+				                	filename:   filename,
+				                	size:       (file['_readableState']['highWaterMark'] || 0)
+    			                });
+	                		},
+	                		err => {
+	                			console.log(err)
+    			                resolve({
+				                	local_url:      localpath + nname,
+				                	server_url:  self.createHttpHost(req)+localpath + nname,
+				                	ext:         ext,
+				                	format:      mimetype,
+				                	filename:    filename,
+				                	size:        (file['_readableState']['highWaterMark'] || 0)
+    			                });
+	                		}
+                		)
+	                } else{
+		                resolve({
+		                	local_url:   localpath + nname,
+		                	server_url:  self.createHttpHost(req)+localpath + nname,
+		                	ext:         ext,
+		                	format:      mimetype,
+		                	filename:    filename,
+		                	size:        (file['_readableState']['highWaterMark'] || 0)
+		                });
+	                }           
 	            });
 			})
         });
 	}
 
+	this.createminiature = function(src, filename){
+		return new Promise((resolve, reject) => {
+			let root = src.replace('/'+filename, ''),
+				name = filename.replace('.'+self.getExtencion(filename),'');
+			thumb({
+			  source: process.env.PWD+'/'+src,
+			  destination: process.env.PWD+'/'+root
+			}).then(function(files) {
+			  resolve(root+'/'+name+'_thumb.'+self.getExtencion(filename));
+			}).catch(function(e) {
+			  reject(e);
+			});
+		})
+	}
 
 	this.getExtencion = function(filename){
 		return path.extname(filename).replace('.','');
