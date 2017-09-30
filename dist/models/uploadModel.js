@@ -90,8 +90,9 @@ module.exports = function(){
 			let root = src.replace('/'+filename, ''),
 				name = filename.replace('.'+self.getExtencion(filename),'');
 			thumb({
-			  source: process.env.PWD+'/'+src,
-			  destination: process.env.PWD+'/'+root
+			  source:      process.env.PWD+'/'+src,
+			  destination: process.env.PWD+'/'+root,
+			  width:       480
 			}).then(function(files) {
 			  resolve(root+'/'+name+'_thumb.'+self.getExtencion(filename));
 			}).catch(function(e) {

@@ -53,7 +53,7 @@ let express        = require('express'),
 						poolLoader()
 						.then(
 							function(pool){
-								let rLoader   = new router(app, routes, self.declareImports(pool)),
+								let rLoader   = new router(app, routes, self.declareImports(pool), config),
 									conection = new db(config.dbName);
 								rLoader.load()
 								.then(

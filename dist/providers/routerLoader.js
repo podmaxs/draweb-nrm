@@ -1,9 +1,13 @@
 'use strict';
 
 let express = require('express'),
-	busboy  = require('connect-busboy');
+	busboy  = require('connect-busboy'),
+	headers = require('../models/headers');
 
-	module.exports = function(app,routes, pool) {
+	module.exports = function(app,routes, pool, config) {
+
+		new headers(app, config.headers);
+
 
 
 		this.load = function(){
