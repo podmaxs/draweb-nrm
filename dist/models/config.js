@@ -9,7 +9,8 @@ module.exports = function(sets){
 		folderModels:    'models', //decreaped
 		appName:         'draweb-nrm',
 		dbName:          'drawebnrm',
-		headers:          []
+		headers:          [],
+		apikey:           false
 	};
 
 
