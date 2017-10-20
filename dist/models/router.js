@@ -14,6 +14,12 @@ let express        = require('express');
 			});
 		}
 
+		this.rmAction = function(action){
+			self.scheme.verbs = self.scheme.verbs.filter((it)=>{
+				return it.action != action;
+			})
+		}
+
 		
 
 		this.scheme =  {
@@ -55,7 +61,8 @@ let express        = require('express');
 					'action'  : 'upload'
 				}
 			],
-			addVerb: self.pushVerb
+			addVerb: self.pushVerb,
+			rmAction: self.rmAction
 		}
 
 		return this.scheme;
