@@ -2,12 +2,13 @@
 
 	var responseProvider = require('./../providers/response'),
 		filterModel      = require('./formatModel'),
-		uploadModel      = require('./uploadModel');
+		uploadModel      = require('./uploadModel'),
+		reoter           = require('./router');
 
 	module.exports = function(schema) {
 		var self         = this;
-			this.filters = {};
-
+		this.filters     = {};
+		self.listAllowed = {};
 
 		this.resolveScheme = function(err, data, resolve, reject){
 			if(!err)
@@ -158,14 +159,94 @@
 			self.filters[verbName] = filter;
 		}
 
+		this.renderSchemeVerbs = function(){
+			for(var verb in self.verbs)
+				self.scheme.actions[verb] = self.verbs[verb];
+		}
+
+		this.verbsList = function(){
+			self.renderSchemeVerbs();	
+			return self.verbs;
+		}
+
+		this.pushverb = function (name, seed){
+			self.verbs[name] = seed;
+			self.renderSchemeVerbs();	
+		}
+
+		this.cloneVerb = function(name, nname){
+			if(self.verbs[name])
+				self.pushverb(nname, self.verbs[name]);
+			else
+				console.log(name+' verb no exists. ');
+		}
+
+		this.getRutes = function(rute){
+			let ruteVerb = new reoter(rute),
+				listVerbs = Array.isArray(self.listAllowed)? self.filterRutes(): self.verbs;
+			ruteVerb.clearActions();
+			for(let v in listVerbs)
+				ruteVerb.addVerb(listVerbs[v].verb, v, v);
+			return ruteVerb;
+		}
+
+		this.verbsActions = function (){
+			let list = {};
+			for(var ac in self.verbs)
+				list[ac] = self.verbs[ac].action;
+
+			return list;
+		}
+
+		this.filterRutes = function(){
+			let nvList = {};
+			if(Array.isArray(self.listAllowed))
+				for(let i in self.listAllowed)
+					if(self.verbs[self.listAllowed[i]] != null)
+						nvList[self.listAllowed[i]] = self.verbs[self.listAllowed[i]];
+			return nvList;
+		}
+
+		this.setFilterRoutes = function(filter){
+			self.listAllowed = filter;
+		}
+
+
+		this.verbs   = {
+			get:             {
+				verb:   'get',
+				action:  self.get
+			},
+			list:            {
+				verb:   'get',
+				action:  self.getList
+			},
+			post:            {
+				verb:   'post',
+				action:  self.post
+			},
+			put:             {
+				verb:   'put',
+				action:  self.put
+			},
+			delete:          {
+				verb:   'delete',
+				action:  self.delete
+			},
+			upload:          {
+				verb:   'post',
+				action:  self.upload
+			}
+		}
+
 		this.scheme = {
-			get:             self.get,
-			list:            self.getList,
-			post:            self.post,
-			put:             self.put,
-			delete:          self.delete,
-			upload:          self.upload,
-			setInterceptor:  self.setFilter
+			actions: 		 self.verbsActions(),
+			setInterceptor:  self.setFilter,
+			verbs:           self.verbsList,
+			pushVerb:        self.pushverb,
+			cloneVerb:       self.cloneVerb,
+			getRoutes:       self.getRutes,
+			filterRoutes:    self.setFilterRoutes
 		};
 
 		return this.scheme;
