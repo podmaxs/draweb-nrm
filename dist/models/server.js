@@ -41,7 +41,6 @@ let express        = require('express'),
 			app.use(bodyParser.urlencoded({
 				extended: true
 			}));
-			app.use('/public',express.static(process.env.PWD+'/public'));
 			app.use(bodyParser.json());
 			app.use(methodOverride());
 			app.use(express.static('public'));
@@ -61,6 +60,8 @@ let express        = require('express'),
 										rLoader.load()
 										.then(
 											(app) => {
+												app.use('/public',express.static(process.env.PWD+'/public'));
+												
 												app.get('/', (req, res) =>{
 													res.send('Load '+config.appName);
 												});
