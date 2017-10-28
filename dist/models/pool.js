@@ -3,7 +3,9 @@
 var defaultConf = require('./config'),
 	varbsModel  = require('./verbs'),
 	routerModel = require('./router'),
-	formatModel = require('./formatModel');
+	formatModel = require('./formatModel'),
+	validator   = require('validator'),
+	bcrypt      = require('bcrypt');
 
 module.exports = function(config){
 	let self = this;
@@ -28,8 +30,17 @@ module.exports = function(config){
 		});
 	};
 
+	this.loadDefaultModules = function(pool){
+		this.scheme['libs'] = {
+			validator: validator,
+			bcrypt:    bcrypt
+		};
 
-	this.loadModule = function(normalizedPathModules){
+		return this.scheme;
+	}
+
+
+	this.loadModule = function(normalizedPathModules, connection){
 		let root      = process.env.PWD+'/modules',
 			pool      = {};
 		return new Promise((resolve, reject) => {
@@ -40,7 +51,7 @@ module.exports = function(config){
 						require("fs").readdirSync(normalizedPath).forEach(function(file) {
 							let moduleFile = require(normalizedPath + "/" + file);
 							if(file.indexOf('.scheme.js') != -1)
-								self.scheme['schemes'][file.replace('.scheme.js','')] = moduleFile;
+								self.scheme['schemes'][file.replace('.scheme.js','')] = new moduleFile(connection);
 							if(file.indexOf('.model.js') != -1)
 								self.scheme['models'][file.replace('.model.js','')] = moduleFile;
 							if(file.indexOf('.provider.js') != -1)
@@ -48,17 +59,17 @@ module.exports = function(config){
 						});
 				}
 			});
-			resolve(pool);
+			resolve(self.loadDefaultModules(pool));
 		});
 	};
 
 
-	this.loadModules = function(){
+	this.loadModules = function(connection){
 		let root = process.env.PWD;
 		return new Promise((resolve, reject) => {
 			let normalizedPath = require("path").join(root, '/modules/');
 			self.makeIfNot(normalizedPath);
-			self.loadModule(normalizedPath)
+			self.loadModule(normalizedPath, connection)
 			.then(
 				(tempPool) => {
 					resolve(self.scheme);	

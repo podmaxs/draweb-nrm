@@ -6,12 +6,12 @@ module.exports = function(config) {
 	let self = this;
 
 
-	this.checkaccess = function( request, response, provider){
+	this.checkaccess = function( request, response, action, provider){
 		if(config.apikey !== false){
 			let res = new responseProvider(response);
 			if(request.headers.apikey != null){
 				if(request.headers.apikey === config.apikey){
-					provider(request, response);
+					provider.action(request, response, action);
 				}else{
 					res.error("Access denied. Invalid apikey");
 				}
@@ -19,7 +19,7 @@ module.exports = function(config) {
 				res.error("Access denied. No found apikey");
 			}
 		}else{
-			provider(request, response);
+			provider.action(request, response, action);
 		}
 	}
 

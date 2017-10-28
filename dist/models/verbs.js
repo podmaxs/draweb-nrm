@@ -33,8 +33,8 @@
 		}
 
 		// verb get
-		this.get = function(request, response){
-			let verbsProcess = self.getFilter('get'),
+		this.get = function(request, response, verbName){
+			let verbsProcess = self.getFilter(verbName),
 				res          = new responseProvider(response);
 			self.resolveProcess(res, verbsProcess.process(request, response, (body) => {
 				return new Promise((resolve, reject) => {
@@ -44,8 +44,8 @@
 		};
 
 		// verb getList
-		this.getList = function(request, response){
-			let verbsProcess = self.getFilter('list'),
+		this.getList = function(request, response, verbName){
+			let verbsProcess = self.getFilter(verbName),
 				res          = new responseProvider(response);
 			self.resolveProcess(res, verbsProcess.process(request, response, (body) => {
 				return new Promise((resolve, reject) => {
@@ -55,22 +55,25 @@
 		};
 
 		// verb post
-		this.post = function(request, response){
-			let verbsProcess = self.getFilter('post'),
+		this.post = function(request, response, verbName){
+			let verbsProcess = self.getFilter(verbName),
 			res              = new responseProvider(response);
 			self.resolveProcess(res, verbsProcess.process(request, response, body => {
 				return new Promise((resolve, reject) => {
 					let nSchema = new schema(body);
 					nSchema.save((err, data) => {
-						self.resolveScheme(err,data, resolve, reject);
+						self.resolveScheme(err, data, resolve, reject);
+					},
+					err => {
+						self.resolveScheme(err, [], resolve, reject);
 					});
 				});
 			}));
 		};
 
 		// verb put
-		this.put = function(request, response){
-			let verbsProcess = self.getFilter('put'),
+		this.put = function(request, response, verbName){
+			let verbsProcess = self.getFilter(verbName),
 			res              = new responseProvider(response);
 			self.resolveProcess(res, verbsProcess.process(request, response, body => {
 				return new Promise((resolve, reject) => {
@@ -93,7 +96,7 @@
 		};
 
 		// verb delete
-		this.delete = function(request, response){
+		this.delete = function(request, response, verbName){
 			let verbsProcess = self.getFilter('delete'),
 			res              = new responseProvider(response);
 			self.resolveProcess(res, verbsProcess.process(request, response, body => {
@@ -115,8 +118,8 @@
 		};
 
 		// verb upload
-		this.upload = function(request, response){
-			let verbsProcess = self.getFilter('upload'),
+		this.upload = function(request, response, verbName){
+			let verbsProcess = self.getFilter(verbName),
 			res              = new responseProvider(response);
 			self.resolveProcess(res, verbsProcess.process(request, response, body => {
 				return new Promise((resolve, reject) => {
@@ -145,7 +148,10 @@
 			if(typeof response == typeof "")
 				res.error(response);
 			else
-				res.error(response.log, response.code);
+				if(response.log)
+					res.error(response.log, response.code);
+				else
+					res.error(response, 609);
 		};
 
 		this.getFilter = function(verbName){

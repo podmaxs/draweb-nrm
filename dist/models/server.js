@@ -49,24 +49,32 @@ let express        = require('express'),
 			.then(
 				(errors)=>{
 					if(!errors[0]){
-						let poolLoader = new poolModel(config);
-						poolLoader()
+						let poolLoader = new poolModel(config),
+							conection  = new db(config.dbName);
+						conection.opendb()
 						.then(
-							function(pool){
-								let rLoader   = new router(app, routes, self.declareImports(pool), config),
-									conection = new db(config.dbName);
-								rLoader.load()
+							(connection) => {
+								poolLoader(connection)
 								.then(
-									(app) => {
-										app.get('/', (req, res) =>{
-											res.send('Load '+config.appName);
-										});
-										
-										app.listen(config.port, function(){
-											console.log('server redy on '+config.port);
-										});
+									function(pool){
+										let rLoader   = new router(app, routes, self.declareImports(pool), config);
+										rLoader.load()
+										.then(
+											(app) => {
+												app.get('/', (req, res) =>{
+													res.send('Load '+config.appName);
+												});
+												
+												app.listen(config.port, function(){
+													console.log('server redy on '+config.port);
+												});
+											}
+										);
 									}
-								);
+								)
+							},
+							err => {
+								console.log(err);
 							}
 						)
 							
