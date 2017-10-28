@@ -1,6 +1,6 @@
 {
   "name": "draweb-nrm",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Restful api module of draweb",
   "main": "index.js",
   "scripts": {
