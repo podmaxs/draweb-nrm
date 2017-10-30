@@ -72,7 +72,8 @@ let express        = require('express'),
 
 												console.log('\n\n***********************');
 												console.log('**** Service config *****');
-												console.log(config);
+												console.log(JSON.stringify(config).replace('{','').replace('}','').replace(/,/g,'\n'));
+												console.log('\n\n***********************\n');
 											}
 										);
 									}
