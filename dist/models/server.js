@@ -69,6 +69,10 @@ let express        = require('express'),
 												app.listen(config.port, function(){
 													console.log('server redy on '+config.port);
 												});
+
+												console.log('\n\n***********************');
+												console.log('**** Service config *****');
+												console.log(config);
 											}
 										);
 									}
