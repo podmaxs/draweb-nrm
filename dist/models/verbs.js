@@ -3,7 +3,10 @@
 	var responseProvider = require('./../providers/response'),
 		filterModel      = require('./formatModel'),
 		uploadModel      = require('./uploadModel'),
-		reoter           = require('./router');
+		reoter           = require('./router'),
+		fs 				 = require('fs'),
+		Log 			 = require('log'),
+		logfile			 = new Log('debug', fs.createWriteStream(__dirname + '/verbose.log'));
 
 	module.exports = function(schema) {
 		var self         = this;
@@ -18,6 +21,8 @@
 					resolve({data:{},log:'Done'});
 			else
 				reject(err);
+			if(err)
+				logfile.error('error with mongodb',err);
 		}
 
 		this.resolveProcess = function(res,process){
@@ -152,6 +157,7 @@
 					res.error(response.log, response.code);
 				else
 					res.error(response, 609);
+			logfile.error('error on request',response);
 		};
 
 		this.getFilter = function(verbName){
