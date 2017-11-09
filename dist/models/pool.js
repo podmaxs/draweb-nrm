@@ -119,7 +119,8 @@ module.exports = function(config){
 		app:{
 			verbs:       varbsModel,
 			router:      routerModel,
-			interceptor: formatModel
+			interceptor: formatModel,
+			config:      config
 		}
 	};
 

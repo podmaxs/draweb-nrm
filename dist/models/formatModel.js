@@ -4,7 +4,7 @@
 	module.exports = function() {
 		var self = this;
 
-		this.process = function(request, response, actionVerb){
+		this.process = (request, response, actionVerb) => {
 			return new Promise((resolve, reject) => {
 				self.filterRequest(request)
 				.then(
@@ -38,13 +38,13 @@
 			});
 		}
 
-		this.filterRequest = function(req, resp){
+		this.filterRequest = (req, resp) => {
 			return new Promise((resolve, reject) => {
 				resolve(req.body);
 			});
 		}
 
-		this.filterResponse = function(data){
+		this.filterResponse = data => {
 			return new Promise((resolve, reject) => {
 				resolve(data);
 			});
@@ -56,11 +56,15 @@
 		this.setfilterResponse = (nr) => {
 			self.filterResponse = nr;
 		}
+		this.setProcess = (nr) => {
+			self.process = nr;
+		}
 
 
 		return {
 			newfilterRequest:  self.setfilterRequest,
 			newfilterResponse: self.setfilterResponse,
+			newProcess:        self.setProcess,
 			process:           self.process
 		}
 	}
