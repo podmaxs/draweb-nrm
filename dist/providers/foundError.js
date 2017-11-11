@@ -7,7 +7,7 @@ let check          = require('syntax-error'),
 
 		this.check = function(){
 			return new Promise((resolve,reject) => {
-				let normalizedPath = require("path").join(__dirname, "."),
+				let normalizedPath = require("path").join(process.env.PWD, "./modules"),
 					errors         = [];
 				//console.log(process.env.PWD,normalizedPath)
 				console.log("Check code")
