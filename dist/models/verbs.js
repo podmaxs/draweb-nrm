@@ -258,7 +258,8 @@
 			pushVerb:        self.pushverb,
 			cloneVerb:       self.cloneVerb,
 			getRoutes:       self.getRutes,
-			filterRoutes:    self.setFilterRoutes
+			filterRoutes:    self.setFilterRoutes,
+			apply:           self.renderSchemeVerbs,
 		};
 
 		return this.scheme;

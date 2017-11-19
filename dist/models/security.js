@@ -11,7 +11,12 @@ module.exports = function(config) {
 			let res = new responseProvider(response);
 			if(request.headers.apikey != null){
 				if(request.headers.apikey === config.apikey){
-					provider.action(request, response, action);
+					if(provider && provider.action){
+						provider.action(request, response, action);
+					}else{
+						res.error("Error on load provider");
+						console.log('Error on load provider action', provider);
+					}
 				}else{
 					res.error("Access denied. Invalid apikey");
 				}
@@ -22,6 +27,4 @@ module.exports = function(config) {
 			provider.action(request, response, action);
 		}
 	}
-
-
 };
