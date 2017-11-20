@@ -54,7 +54,8 @@
 				res          = new responseProvider(response);
 			self.resolveProcess(res, verbsProcess.process(request, response, (body) => {
 				return new Promise((resolve, reject) => {
-					schema.find(body).find((err, data) => self.resolveScheme(err, data, resolve, reject));
+					body = typeof body == typeof {}? body: {};
+					schema.find(body.query || {}).sort(body.sort || {}).skip(body.skip || 0).limit(body.limit || 20).find((err, data) => self.resolveScheme(err, data, resolve, reject));
 				});
 			}));
 		};
