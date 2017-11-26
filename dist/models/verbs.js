@@ -127,9 +127,9 @@
 		this.upload = function(request, response, verbName){
 			let verbsProcess = self.getFilter(verbName),
 			res              = new responseProvider(response);
-			self.resolveProcess(res, verbsProcess.process(request, response, body => {
+			self.resolveProcess(res, verbsProcess.process(request, response, uploadService => {
 				return new Promise((resolve, reject) => {
-					let uploadSrv = new uploadModel();
+					let uploadSrv = !uploadService.registerUpload? new uploadModel(): uploadService;
 					uploadSrv.registerUpload(request, response)
 					.then(
 						data => {
