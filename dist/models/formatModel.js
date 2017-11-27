@@ -13,7 +13,7 @@
 							actionVerb(nBody)
 							.then(
 								verbResponse => {
-									self.filterResponse(verbResponse)
+									self.filterResponse(verbResponse, request)
 									.then(
 										nResponse => {
 											resolve(nResponse);
